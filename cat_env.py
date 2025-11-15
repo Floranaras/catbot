@@ -243,35 +243,215 @@ class SquiddyboiCat(Cat):
 # of the grading.                   #
 #####################################
 
-class TrainerCat(Cat):
-    """A customizable cat for students to implement and test their own behavior algorithms.
-    
-    This cat provides access to:
-    - self.pos: Current cat position as [row, col]
-    - self.player_pos: Current player position
-    - self.prev_player_pos: Previous player position
-    - self.last_player_action: Last action (0:Up, 1:Down, 2:Left, 3:Right)
-    - self.current_distance: Current Manhattan distance to player
-    - self.prev_distance: Previous Manhattan distance to player
-    - self.grid_size: Size of the grid (e.g., 8 for 8x8 grid)
-    
-    Helper methods:
-    - self.player_moved_closer(): Returns True if player's last move decreased distance
-    """
+#class TrainerCat(Cat):
+#    # ADHD Cat
+#    def _get_sprite_path(self) -> str:
+#        return "images/trainer-dp.png"
+#    
+#    def move(self) -> None:
+#        """Moves randomly but sometimes forgets to move"""
+#        import random
+#        
+#        # 30% chance to not move at all (drunk and sleepy)
+#        if random.random() < 0.3:
+#            return
+#        
+#        # 70% of the time, stumble randomly
+#        dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+#        d = random.choice(dirs)
+#        
+#        # Sometimes moves twice (stumbling)
+#        moves = 2 if random.random() < 0.2 else 1
+#        
+#        for _ in range(moves):
+#            self.pos[0] = min(max(0, self.pos[0] + d[0]), self.grid_size - 1)
+#            self.pos[1] = min(max(0, self.pos[1] + d[1]), self.grid_size - 1)
+#
+#class TrainerCat(Cat):
+#    # Shyness Boy
+#    def _get_sprite_path(self) -> str:
+#        return "images/trainer-dp.png"
+#    
+#    def move(self) -> None:
+#        """Runs away only when player gets close"""
+#        import random
+#        
+#        distance = abs(self.pos[0] - self.player_pos[0]) + abs(self.pos[1] - self.player_pos[1])
+#        
+#        if distance <= 3:
+#            # Player is close - RUN AWAY!
+#            possible_moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+#            best_move = None
+#            best_distance = 0
+#            
+#            for dr, dc in possible_moves:
+#                new_r = min(max(0, self.pos[0] + dr), self.grid_size - 1)
+#                new_c = min(max(0, self.pos[1] + dc), self.grid_size - 1)
+#                dist = abs(new_r - self.player_pos[0]) + abs(new_c - self.player_pos[1])
+#                
+#                if dist > best_distance:
+#                    best_move = (dr, dc)
+#                    best_distance = dist
+#            
+#            if best_move:
+#                self.pos[0] = min(max(0, self.pos[0] + best_move[0]), self.grid_size - 1)
+#                self.pos[1] = min(max(0, self.pos[1] + best_move[1]), self.grid_size - 1)
+#        else:
+#            # Player is far - just wander randomly
+#            dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+#            d = random.choice(dirs)
+#            self.pos[0] = min(max(0, self.pos[0] + d[0]), self.grid_size - 1)
+#            self.pos[1] = min(max(0, self.pos[1] + d[1]), self.grid_size - 1)
+#
+#class TrainerCat(Cat):
+#    # CopyCat - violates the MARKOV
+#    def _get_sprite_path(self) -> str:
+#        return "images/trainer-dp.png"
+#    
+#    def move(self) -> None:
+#        """Copies player's last move"""
+#        import random
+#        
+#        if self.last_player_action is None:
+#            # First move - random
+#            dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+#            d = random.choice(dirs)
+#            self.pos[0] = min(max(0, self.pos[0] + d[0]), self.grid_size - 1)
+#            self.pos[1] = min(max(0, self.pos[1] + d[1]), self.grid_size - 1)
+#        else:
+#            # Copy player's exact move
+#            if self.last_player_action == 0:  # UP
+#                self.pos[0] = max(0, self.pos[0] - 1)
+#            elif self.last_player_action == 1:  # DOWN
+#                self.pos[0] = min(self.grid_size - 1, self.pos[0] + 1)
+#            elif self.last_player_action == 2:  # LEFT
+#                self.pos[1] = max(0, self.pos[1] - 1)
+#            elif self.last_player_action == 3:  # RIGHT
+#                self.pos[1] = min(self.grid_size - 1, self.pos[1] + 1)
+#
+#class TrainerCat(Cat):
+#    # Tom Sawyer - violates the MARKOV PROPERTY
+#    def _get_sprite_path(self) -> str:
+#        return "images/trainer-dp.png"
+#    
+#    def move(self) -> None:
+#        """Mimics player's last move in opposite direction"""
+#        import random
+#        
+#        if self.last_player_action is None:
+#            # First move - random
+#            dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+#            d = random.choice(dirs)
+#            self.pos[0] = min(max(0, self.pos[0] + d[0]), self.grid_size - 1)
+#            self.pos[1] = min(max(0, self.pos[1] + d[1]), self.grid_size - 1)
+#        else:
+#            # Mirror player's move in opposite direction
+#            if self.last_player_action == 0:  # Player went UP
+#                self.pos[0] = min(self.grid_size - 1, self.pos[0] + 1)  # Go DOWN
+#            elif self.last_player_action == 1:  # Player went DOWN
+#                self.pos[0] = max(0, self.pos[0] - 1)  # Go UP
+#            elif self.last_player_action == 2:  # Player went LEFT
+#                self.pos[1] = min(self.grid_size - 1, self.pos[1] + 1)  # Go RIGHT
+#            elif self.last_player_action == 3:  # Player went RIGHT
+#                self.pos[1] = max(0, self.pos[1] - 1)  # Go LEFT
+#
+#class TrainerCat(Cat):
+#    # Zinger 
+#    def __init__(self, grid_size: int, tile_size: int):
+#        super().__init__(grid_size, tile_size)
+#        self.direction = 0  # 0=horizontal, 1=vertical
+#        self.step_count = 0
+#        
+#    def _get_sprite_path(self) -> str:
+#        return "images/trainer-dp.png"
+#    
+#    def move(self) -> None:
+#        """Moves in zigzag pattern, switches direction every 2 moves"""
+#        import random
+#        
+#        # Switch direction every 2 moves
+#        if self.step_count % 2 == 0:
+#            self.direction = 1 - self.direction
+#        
+#        if self.direction == 0:
+#            # Move horizontally (away from player)
+#            if self.player_pos[1] < self.pos[1]:
+#                # Player on left, move right
+#                self.pos[1] = min(self.grid_size - 1, self.pos[1] + 1)
+#            else:
+#                # Player on right, move left
+#                self.pos[1] = max(0, self.pos[1] - 1)
+#        else:
+#            # Move vertically (away from player)
+#            if self.player_pos[0] < self.pos[0]:
+#                # Player above, move down
+#                self.pos[0] = min(self.grid_size - 1, self.pos[0] + 1)
+#            else:
+#                # Player below, move up
+#                self.pos[0] = max(0, self.pos[0] - 1)
+#        
+#        self.step_count += 1
+#
+#class TrainerCat(Cat): 
+#    # Potato Corners
+#    def _get_sprite_path(self) -> str:
+#        return "images/trainer-dp.png"
+#    
+#    def move(self) -> None:
+#        """Always tries to get to nearest corner and stay there"""
+#        import random
+#        
+#        corners = [
+#            (0, 0), 
+#            (0, self.grid_size - 1), 
+#            (self.grid_size - 1, 0), 
+#            (self.grid_size - 1, self.grid_size - 1)
+#        ]
+#        
+#        # Check if already in corner
+#        if (self.pos[0], self.pos[1]) in corners:
+#            # In corner - only move if player is adjacent
+#            is_adjacent = abs(self.pos[0] - self.player_pos[0]) + abs(self.pos[1] - self.player_pos[1]) == 1
+#            
+#            if is_adjacent:
+#                # Jump to farthest corner
+#                farthest = max(corners, key=lambda c: abs(c[0] - self.player_pos[0]) + abs(c[1] - self.player_pos[1]))
+#                self.pos[0] = farthest[0]
+#                self.pos[1] = farthest[1]
+#        else:
+#            # Not in corner - head to nearest one
+#            nearest = min(corners, key=lambda c: abs(c[0] - self.pos[0]) + abs(c[1] - self.pos[1]))
+#            
+#            # Move one step toward nearest corner
+#            if self.pos[0] < nearest[0]:
+#                self.pos[0] += 1
+#            elif self.pos[0] > nearest[0]:
+#                self.pos[0] -= 1
+#            elif self.pos[1] < nearest[1]:
+#                self.pos[1] += 1
+#            elif self.pos[1] > nearest[1]:
+#                self.pos[1] -= 1
+#
+class TrainerCat(Cat): 
+    # Goku
     def _get_sprite_path(self) -> str:
         return "images/trainer-dp.png"
     
     def move(self) -> None:
-        # Students can implement their own cat behavior here
-        # This is a dummy implementation that stays still
-        # You can:
-        # 1. Access player information (position, last action)
-        # 2. Check distances
-        # 3. Implement your own movement strategy
-        # 4. Test different learning algorithms
-        return
-
-#######################################
+        """Crazy teleporter - randomly teleports anywhere!"""
+        import random
+        
+        # 40% chance to teleport to completely random position
+        if random.random() < 0.4:
+            self.pos[0] = random.randint(0, self.grid_size - 1)
+            self.pos[1] = random.randint(0, self.grid_size - 1)
+        else:
+            # Otherwise move randomly
+            dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+            d = random.choice(dirs)
+            self.pos[0] = min(max(0, self.pos[0] + d[0]), self.grid_size - 1)
+            self.pos[1] = min(max(0, self.pos[1] + d[1]), self.grid_size - 1)
+######################################
 # END OF CAT BEHAVIOR IMPLEMENTATIONS #
 #######################################
 

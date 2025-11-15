@@ -43,10 +43,10 @@ def train_bot(cat_name, render: int = -1):
     
     # Q-learning hyperparameters
     learning_rate = 0.15          # Alpha: how much new info overrides old info
-    discount_factor = 0.95        # Gamma: importance of future rewards
+    discount_factor = 0.97        # Gamma: importance of future rewards
     epsilon_start = 1.0           # Initial exploration rate
     epsilon_end = 0.01            # Minimum exploration rate
-    epsilon_decay = 0.9995        # Decay rate for epsilon
+    epsilon_decay = 0.9996        # Decay rate for epsilon
     epsilon = epsilon_start
     
     max_steps_per_episode = 200   # Maximum steps before episode terminates
@@ -112,7 +112,7 @@ def train_bot(cat_name, render: int = -1):
                     reward = -5.0
                 else:
                     # Same distance
-                    reward = -1.0
+                    reward = -1.5
                 
                 # Small penalty for each step to encourage efficiency
                 reward -= 0.5
