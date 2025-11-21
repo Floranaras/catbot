@@ -5,6 +5,7 @@ import numpy as np
 import pygame
 from utility import play_q_table
 from cat_env import make_env
+import matplotlib.pyplot as plt
 #############################################################################
 # TODO: YOU MAY ADD ADDITIONAL IMPORTS OR FUNCTIONS HERE.                   #
 #############################################################################
@@ -48,7 +49,7 @@ def train_bot(cat_name, render: int = -1):
     epsilon_end = 0.01            # Minimum exploration rate
     epsilon_decay = 0.9996        # Decay rate for epsilon
     epsilon = epsilon_start
-    
+    episode_rewards = []
     max_steps_per_episode = 200   # Maximum steps before episode terminates
 
     
@@ -72,6 +73,7 @@ def train_bot(cat_name, render: int = -1):
         state, _ = env.reset()
         done = False
         steps = 0
+        total_reward = 0
         
         while not done and steps < max_steps_per_episode:
             # Step 2: Epsilon-greedy action selection
@@ -115,7 +117,9 @@ def train_bot(cat_name, render: int = -1):
                     reward = -1.5
                 
                 # Small penalty for each step to encourage efficiency
-                reward -= 0.5
+                reward -= 1.5
+
+            total_reward += reward
             
             # Step 5: Update Q-table using Q-learning formula
             # Q(s,a) = Q(s,a) + α * [r + γ * max(Q(s',a')) - Q(s,a)]
@@ -131,6 +135,7 @@ def train_bot(cat_name, render: int = -1):
         
         # Decay epsilon for less exploration over time
         epsilon = max(epsilon_end, epsilon * epsilon_decay)
+        episode_rewards.append(total_reward)
 
         
         
@@ -144,4 +149,9 @@ def train_bot(cat_name, render: int = -1):
             play_q_table(viz_env, q_table, max_steps=100, move_delay=0.02, window_title=f"{cat_name}: Training Episode {ep}/{episodes}")
             print('episode', ep)
 
+    plt.plot(episode_rewards)
+    plt.title('Reward Update')
+    plt.xlabel('Episode')
+    plt.ylabel('Reward')
+    plt.show()
     return q_table
