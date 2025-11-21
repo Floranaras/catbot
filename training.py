@@ -50,6 +50,7 @@ def train_bot(cat_name, render: int = -1):
     epsilon_decay = 0.9996        # Decay rate for epsilon
     epsilon = epsilon_start
     episode_rewards = []
+    episode_duration = []
     max_steps_per_episode = 200   # Maximum steps before episode terminates
 
     
@@ -74,6 +75,7 @@ def train_bot(cat_name, render: int = -1):
         done = False
         steps = 0
         total_reward = 0
+        start_time = time.time()
         
         while not done and steps < max_steps_per_episode:
             # Step 2: Epsilon-greedy action selection
@@ -134,8 +136,11 @@ def train_bot(cat_name, render: int = -1):
             steps += 1
         
         # Decay epsilon for less exploration over time
+        end_time = time.time()
         epsilon = max(epsilon_end, epsilon * epsilon_decay)
         episode_rewards.append(total_reward)
+        duration = end_time - start_time
+        episode_duration.append(duration)
 
         
         
@@ -149,9 +154,19 @@ def train_bot(cat_name, render: int = -1):
             play_q_table(viz_env, q_table, max_steps=100, move_delay=0.02, window_title=f"{cat_name}: Training Episode {ep}/{episodes}")
             print('episode', ep)
 
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
     plt.plot(episode_rewards)
     plt.title('Reward Update')
     plt.xlabel('Episode')
     plt.ylabel('Reward')
+
+    plt.subplot(1, 2, 2)  # 1 row, 2 columns, index 2
+    plt.plot(episode_duration, color='orange')
+    plt.title("Time Taken per Episode")
+    plt.xlabel("Episode")
+    plt.ylabel("Seconds")
+
+    plt.tight_layout()
     plt.show()
     return q_table
