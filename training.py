@@ -51,6 +51,7 @@ def train_bot(cat_name, render: int = -1):
     epsilon = epsilon_start
     episode_rewards = []
     episode_duration = []
+    episode_steps = []
     max_steps_per_episode = 200   # Maximum steps before episode terminates
 
     
@@ -137,10 +138,13 @@ def train_bot(cat_name, render: int = -1):
         
         # Decay epsilon for less exploration over time
         end_time = time.time()
-        epsilon = max(epsilon_end, epsilon * epsilon_decay)
-        episode_rewards.append(total_reward)
         duration = end_time - start_time
+
+        epsilon = max(epsilon_end, epsilon * epsilon_decay)
+
+        episode_rewards.append(total_reward)
         episode_duration.append(duration)
+        episode_steps.append(steps)
 
         
         
@@ -154,18 +158,24 @@ def train_bot(cat_name, render: int = -1):
             play_q_table(viz_env, q_table, max_steps=100, move_delay=0.02, window_title=f"{cat_name}: Training Episode {ep}/{episodes}")
             print('episode', ep)
 
-    plt.figure(figsize=(10, 5))
-    plt.subplot(1, 2, 1)
-    plt.plot(episode_rewards)
+    plt.figure(figsize=(20, 10))
+    plt.subplot(1, 3, 1)
+    plt.plot(episode_rewards, color='blue')
     plt.title('Reward Update')
     plt.xlabel('Episode')
     plt.ylabel('Reward')
 
-    plt.subplot(1, 2, 2)  # 1 row, 2 columns, index 2
+    plt.subplot(1, 3, 2)
     plt.plot(episode_duration, color='orange')
     plt.title("Time Taken per Episode")
     plt.xlabel("Episode")
     plt.ylabel("Seconds")
+
+    plt.subplot(1, 3, 3)
+    plt.plot(episode_steps, color='pink')
+    plt.title("Steps Taken per Episode")
+    plt.xlabel("Episode")
+    plt.ylabel("Steps")
 
     plt.tight_layout()
     plt.show()
