@@ -47,7 +47,7 @@ def train_bot(cat_name, render: int = -1):
     discount_factor = 0.97        # Gamma: importance of future rewards
     epsilon_start = 1.0           # Initial exploration rate
     epsilon_end = 0.01            # Minimum exploration rate
-    epsilon_decay = 0.9996        # Decay rate for epsilon
+    epsilon_decay = 0.8432        # Decay rate for epsilon
     epsilon = epsilon_start
     episode_rewards = []
     episode_duration = []
@@ -156,6 +156,7 @@ def train_bot(cat_name, render: int = -1):
         if render != -1 and (ep == 1 or ep % render == 0):
             viz_env = make_env(cat_type=cat_name)
             play_q_table(viz_env, q_table, max_steps=100, move_delay=0.02, window_title=f"{cat_name}: Training Episode {ep}/{episodes}")
+            viz_env.close()
             print('episode', ep)
 
     plt.figure(figsize=(20, 10))
