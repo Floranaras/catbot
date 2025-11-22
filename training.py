@@ -58,11 +58,11 @@ def train_bot(cat_name, render: int = -1):
     #############################################################################
     
     # Q-learning hyperparameters
-    learning_rate = 0.15          # Alpha: how much new info overrides old info
-    discount_factor = 0.97        # Gamma: importance of future rewards
+    learning_rate = 0.16          # Alpha: how much new info overrides old info
+    discount_factor = 0.95        # Gamma: importance of future rewards
     epsilon_start = 1.0           # Initial exploration rate
     epsilon_end = 0.01            # Minimum exploration rate
-    epsilon_decay = 0.8432        # Decay rate for epsilon
+    epsilon_decay = 0.86457        # Decay rate for epsilon
     epsilon = epsilon_start
     episode_rewards = []
     episode_duration = []
@@ -119,7 +119,7 @@ def train_bot(cat_name, render: int = -1):
             
             if done:
                 # Caught the cat - large positive reward
-                reward = 180.0 - (180 * (steps / max_steps_per_episode))
+                reward = 160.0 - (160 * (steps / max_steps_per_episode))
             else:
                 # Calculate new distance
                 new_distance = calculate_manhattan_distance(next_state)
@@ -137,7 +137,7 @@ def train_bot(cat_name, render: int = -1):
 
                 # Penalize whenever the bot does an action loop
                 if check_action_loop(prev_state, state, next_state):
-                    reward -= 5.0
+                    reward -= 8.0
                 
                 # Small penalty for each step to encourage efficiency
                 reward -= 1.5
