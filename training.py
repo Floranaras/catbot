@@ -119,7 +119,7 @@ def train_bot(cat_name, render: int = -1):
             
             if done:
                 # Caught the cat - large positive reward
-                reward = 100.0
+                reward = 180.0 - (180 * (steps / max_steps_per_episode))
             else:
                 # Calculate new distance
                 new_distance = calculate_manhattan_distance(next_state)
@@ -137,7 +137,7 @@ def train_bot(cat_name, render: int = -1):
 
                 # Penalize whenever the bot does an action loop
                 if check_action_loop(prev_state, state, next_state):
-                    reward -= 15.0
+                    reward -= 5.0
                 
                 # Small penalty for each step to encourage efficiency
                 reward -= 1.5
