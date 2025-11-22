@@ -19,6 +19,21 @@ def calculate_manhattan_distance(state):
     return abs(agent_row - cat_row) + abs(agent_col - cat_col)
 
 
+def check_action_loop(oldest, prev, latest):
+    # Extract Agent positions
+    prev_pos = (prev // 1000, (prev // 100) % 10)
+    curr_pos = (latest // 1000, (latest // 100) % 10)
+
+    # Check if oldest exists, safety on first bot move
+    if oldest is not None:
+        old_pos = (oldest // 1000, (oldest // 100) % 10)
+        # Returns true if bot is humping the wall or has adhd by moving back and forth
+        return curr_pos == prev_pos or curr_pos == old_pos
+    else:
+        # No oldest, so we can only check for a hump
+        return curr_pos == prev_pos
+
+
 #############################################################################
 # END OF YOUR CODE. DO NOT MODIFY ANYTHING BEYOND THIS LINE.                #
 #############################################################################
@@ -77,6 +92,7 @@ def train_bot(cat_name, render: int = -1):
         steps = 0
         total_reward = 0
         start_time = time.time()
+        prev_state = None
         
         while not done and steps < max_steps_per_episode:
             # Step 2: Epsilon-greedy action selection
@@ -118,6 +134,10 @@ def train_bot(cat_name, render: int = -1):
                 else:
                     # Same distance
                     reward = -1.5
+
+                # Penalize whenever the bot does an action loop
+                if check_action_loop(prev_state, state, next_state):
+                    reward -= 15.0
                 
                 # Small penalty for each step to encourage efficiency
                 reward -= 1.5
@@ -132,8 +152,10 @@ def train_bot(cat_name, render: int = -1):
             new_value = old_value + learning_rate * (reward + discount_factor * next_max - old_value)
             q_table[state][action] = new_value
             
-            # Move to next state
+            # Update states
+            prev_state = state
             state = next_state
+
             steps += 1
         
         # Decay epsilon for less exploration over time
